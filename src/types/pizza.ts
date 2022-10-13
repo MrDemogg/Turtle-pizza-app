@@ -1,13 +1,15 @@
 export enum PizzaActionTypes {
   FETCH_DISHES = "FETCH_DISHES",
   FETCH_SUCCESS_DISHES = "FETCH_SUCCESS_DISHES",
-  FETCH_ERROR_DISHES = "FETCH_ERROR_DISHES"
+  FETCH_ERROR_DISHES = "FETCH_ERROR_DISHES",
+  SET_ORDER = "SET_ORDER"
 }
 
 export interface PizzaState {
   error: null | string,
   loading: boolean,
-  dishes: any[] | null
+  dishes: any[] | null,
+  order: any | null
 }
 
 interface FetchDishes {
@@ -24,4 +26,9 @@ interface FetchErrorDishes {
   payload: string
 }
 
-export type PizzaActions = FetchDishes | FetchSuccessDishes | FetchErrorDishes
+interface SetOrder {
+  type: PizzaActionTypes.SET_ORDER,
+  payload: any
+}
+
+export type PizzaActions = FetchDishes | FetchSuccessDishes | FetchErrorDishes | SetOrder
