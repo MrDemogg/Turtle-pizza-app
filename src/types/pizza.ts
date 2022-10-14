@@ -4,7 +4,8 @@ export enum PizzaActionTypes {
   FETCH_ERROR_DISHES = "FETCH_ERROR_DISHES",
   ADD_ORDER_PRICE = "ADD_ORDER_PRICE",
   ADD_ORDER_CART = "ADD_ORDER_CART",
-  REMOVE_ORDER_DISH = "REMOVE_ORDER_DISH"
+  REMOVE_ORDER_DISH = "REMOVE_ORDER_DISH",
+  SET_ORDER = "SET_ORDER"
 }
 
 export interface PizzaState {
@@ -43,4 +44,9 @@ interface RemoveOrderDish {
   payload: any
 }
 
-export type PizzaActions = FetchDishes | FetchSuccessDishes | FetchErrorDishes | AddOrderPrice | AddOrderCart | RemoveOrderDish
+interface SetOrder {
+  type: PizzaActionTypes.SET_ORDER,
+  payload: object
+}
+
+export type PizzaActions = FetchDishes | FetchSuccessDishes | FetchErrorDishes | AddOrderPrice | AddOrderCart | RemoveOrderDish | SetOrder

@@ -52,6 +52,8 @@ export const PizzaReducer = (state = initialState, action: PizzaActions): PizzaS
         return {...state, order: {...state.order, cart: [...CartWithoutDish, newSelectedDish], totalPrice: removedTotalPrice}}
       }
       return {...state, order: {...state.order, cart: CartWithoutDish, totalPrice: removedTotalPrice}}
+    case PizzaActionTypes.SET_ORDER:
+      return {...state, order: action.payload}
     default:
       return state
   }
