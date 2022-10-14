@@ -25,36 +25,34 @@ const DishesModal: FC<DishesModalProps> = (
     setSelectedDishPrice(0)
   }
   return (
-    <View>
-      <Modal style={styles.amountModal} visible={amountModal} onDismiss={() => setAmountModal(false)}>
-        <View style={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
-          <TextInput value={amount} onChangeText={(value) => setAmount(value)} label='Amount:' />
-          <Button onPress={() => {
+    <Modal style={styles.amountModal} visible={amountModal} onDismiss={() => setAmountModal(false)}>
+      <View style={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
+        <TextInput value={amount} onChangeText={(value) => setAmount(value)} label='Amount:' />
+        <Button onPress={() => {
+          toDefault()
+        }}>Cancel</Button>
+        <Button onPress={() => {
+          if (!isNaN(Number(amount))) {
+            const price = Number(selectedDishPrice) * Number(amount)
+            AddOrderCart({amount: Number(amount), price: price, title: selectedDishTitle})
+            AddOrderPrice(price)
             toDefault()
-          }}>Cancel</Button>
-          <Button onPress={() => {
-            if (!isNaN(Number(amount))) {
-              const price = Number(selectedDishPrice) * Number(amount)
-              AddOrderCart({amount: Number(amount), price: price, title: selectedDishTitle})
-              AddOrderPrice(price)
-              toDefault()
-            } else {
-              setDialod(true)
-            }
-          }}>
-            Add to cart
-          </Button>
-        </View>
-      </Modal>
-    <Dialog visible={dialog} onDismiss={() => setDialod(false)}>
-      <Dialog.Content>
-        <Paragraph>Amount must be integer</Paragraph>
-      </Dialog.Content>
-      <Dialog.Actions>
-        <Button onPress={() => setDialod(false)}>Ok</Button>
-      </Dialog.Actions>
-    </Dialog>
-    </View>
+          } else {
+            setDialod(true)
+          }
+        }}>
+          Add to cart
+        </Button>
+      </View>
+      <Dialog visible={dialog} onDismiss={() => setDialod(false)}>
+        <Dialog.Content>
+          <Paragraph>Amount must be integer</Paragraph>
+        </Dialog.Content>
+        <Dialog.Actions>
+          <Button onPress={() => setDialod(false)}>Ok</Button>
+        </Dialog.Actions>
+      </Dialog>
+    </Modal>
   );
 };
 
