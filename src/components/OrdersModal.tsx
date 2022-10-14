@@ -1,5 +1,5 @@
 import React, {FC, useState} from 'react';
-import {StyleSheet, Text, View} from "react-native";
+import {ScrollView, StyleSheet, Text, View} from "react-native";
 import {IconButton, MD3Colors, Modal, Button, Dialog, Paragraph} from "react-native-paper";
 import {useTypedSelector} from "../hooks/useTypedSelector";
 import {useActions} from "../hooks/useActions";
@@ -14,9 +14,10 @@ interface OrdersModalProps {
 
 const OrdersModal: FC<OrdersModalProps> = ({visible, setVisible}) => {
   const {order, error} = useTypedSelector(state => state.pizza)
-  const {RemoveOrderDish} = useActions()
+  const {RemoveOrderDish, SetOrder} = useActions()
   const [dialog, setDialog] = useState(false)
   const postOrder = () => {
+    console.log('post')
     const firebaseConfig = {
       apiKey: "AIzaSyDM3wwBqFN2W2kKSou8n_hN5__eNxF70yE",
       authDomain: "turtle-pizza-69d09.firebaseapp.com",
@@ -31,16 +32,28 @@ const OrdersModal: FC<OrdersModalProps> = ({visible, setVisible}) => {
     const db = getDatabase();
     const dbRef = ref(getDatabase());
     get(child(dbRef, `orders`)).then((snapshot) => {
+      console.log(snapshot)
+      const postOrder = {key: uuid.v4(), totalPrice: order.totalPrice, cart: order.cart}
       if (snapshot.exists()) {
         const oldSnapshot = snapshot.val()
-        const postOrder = {key: uuid.v4(), totalPrice: order.totalPrice, cart: order.cart}
+        console.log(oldSnapshot)
         const newSnapshot = [...oldSnapshot, postOrder]
         set(ref(db, 'orders'), newSnapshot).then()
+      } else {
+        set(ref(db, 'orders'), [postOrder]).then()
       }
     }).catch((error) => {
       console.error(error);
     });
   }
+  const toDefault = () => {
+    setVisible(false)
+    SetOrder({
+      cart: [],
+      totalPrice: 150
+    })
+  }
+
   if (error) {
     return <Text style={{textAlign: 'center', marginTop: 50, fontSize: 35}}>{error}</Text>
   }
@@ -49,14 +62,14 @@ const OrdersModal: FC<OrdersModalProps> = ({visible, setVisible}) => {
       <View style={styles.modalPosition}>
         <Text style={styles.title}>Your Order:</Text>
           {order.cart.length > 0
-            ? <View style={styles.modalContainer}>
+            ? <ScrollView style={styles.scroll}>
               {order.cart.map((dish: any) =>
                 <View key={dish.title} style={styles.dishInfo}>
                   <Text style={{fontSize: 20}}>{dish.title} x{dish.amount}</Text>
                   <Text style={{fontSize: 18}}>{dish.price} руб.</Text>
                   <IconButton
                     icon={dish.amount > 1
-                      ? 'back'
+                      ? 'repeat'
                       : 'delete'
                     }
                     iconColor={MD3Colors.primary50}
@@ -65,7 +78,7 @@ const OrdersModal: FC<OrdersModalProps> = ({visible, setVisible}) => {
                   />
                 </View>
               )}
-            </View>
+              </ScrollView>
             : <Text style={{fontSize: 30, marginBottom: 50}}>В корзине пусто</Text>
           }
         <Text style={{fontSize: 27}}>Delivery: 150 руб.</Text>
@@ -75,6 +88,7 @@ const OrdersModal: FC<OrdersModalProps> = ({visible, setVisible}) => {
           <Button onPress={() => {
             if (order.totalPrice > 150) {
               postOrder()
+              toDefault()
             } else {
               setDialog(true)
             }
@@ -96,12 +110,12 @@ const OrdersModal: FC<OrdersModalProps> = ({visible, setVisible}) => {
 const styles = StyleSheet.create({
   modal: {
     backgroundColor: '#fff',
-    height: 400,
+    height: '100%',
     width: '100%'
   },
   modalPosition: {
     position: 'relative',
-    top: 100
+    top: 0
   },
   title: {
     fontSize: 40,
@@ -109,17 +123,12 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: -150
   },
-  modalContainer: {
-    flex: 1,
-    marginBottom: 100,
-    backgroundColor: '#000'
-  },
   dishInfo: {
     width: '100%',
+    height: 40,
     justifyContent: 'space-between',
     display: 'flex',
-    flexDirection: 'row',
-    marginBottom: -30,
+    flexDirection: 'row'
   },
   buttons: {
     display: 'flex',
@@ -127,6 +136,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     position: 'relative',
     top: 20
+  },
+  scroll: {
+    width: '120%',
+    height: 150,
+    position: 'relative',
+    bottom: 40,
+    borderStyle: 'solid',
+    borderColor: '#22B0A0',
+    borderTopWidth: 2,
+    borderBottomWidth: 2
   }
 })
 
