@@ -2,25 +2,19 @@ import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, ScrollView, StyleSheet, Text, View} from "react-native";
 import {useTypedSelector} from "../hooks/useTypedSelector";
 import {useActions} from "../hooks/useActions";
-import {Card, Title, Button, Modal, TextInput, Dialog, Paragraph} from "react-native-paper";
+import {Card, Title, Button} from "react-native-paper";
 import OrdersModal from "./OrdersModal";
+import DishesModal from "./DishesModal";
 const Dishes = () => {
   const {dishes, error, loading, order} = useTypedSelector(state => state.pizza)
-  const {FetchDishes, AddOrderCart, AddOrderPrice} = useActions()
-  const [amountModal, setAmountModal] = useState(false)
-  const [amount, setAmount] = useState('')
+  const {FetchDishes} = useActions()
+  const [ordersModal, setOrdersModal] = useState(false)
   const [selectedDishPrice, setSelectedDishPrice] = useState(0)
   const [selectedDishTitle, setSelectedDishTitle] = useState('')
-  const [dialog, setDialod] = useState(false)
-  const [ordersModal, setOrdersModal] = useState(false)
+  const [amountModal, setAmountModal] = useState(false)
   useEffect(() => {
     FetchDishes()
   }, [])
-  const toDefault = () => {
-    setAmountModal(false)
-    setSelectedDishTitle('')
-    setSelectedDishPrice(0)
-  }
   return (
     <View>
       <View style={styles.nav}><Text style={styles.navTitle}>Turtle Pizza</Text></View>
@@ -62,35 +56,16 @@ const Dishes = () => {
           </View>
         }
         </View>
-      }<OrdersModal setVisible={setOrdersModal} visible={ordersModal}/>
-      <Modal style={styles.amountModal} visible={amountModal} onDismiss={() => setAmountModal(false)}>
-      <View style={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
-        <TextInput value={amount} onChangeText={(value) => setAmount(value)} label='Amount:' />
-        <Button onPress={() => {
-          toDefault()
-        }}>Cancel</Button>
-        <Button onPress={() => {
-          if (!isNaN(Number(amount))) {
-            const price = Number(selectedDishPrice) * Number(amount)
-            AddOrderCart({amount: Number(amount), price: price, title: selectedDishTitle})
-            AddOrderPrice(price)
-            toDefault()
-          } else {
-            setDialod(true)
-          }
-        }}>
-          Add to cart
-        </Button>
-      </View>
-    </Modal>
-      <Dialog visible={dialog} onDismiss={() => setDialod(false)}>
-        <Dialog.Content>
-          <Paragraph>Amount must be integer</Paragraph>
-        </Dialog.Content>
-        <Dialog.Actions>
-          <Button onPress={() => setDialod(false)}>Ok</Button>
-        </Dialog.Actions>
-      </Dialog>
+      }
+      <DishesModal
+        selectedDishPrice={selectedDishPrice}
+        setSelectedDishPrice={setSelectedDishPrice}
+        selectedDishTitle={selectedDishTitle}
+        setSelectedDishTitle={setSelectedDishTitle}
+        amountModal={amountModal}
+        setAmountModal={setAmountModal}
+      />
+      <OrdersModal setVisible={setOrdersModal} visible={ordersModal}/>
     </View>
   );
 };
@@ -111,11 +86,6 @@ const styles = StyleSheet.create({
   scroll: {
     flex: 1, paddingBottom: 240
   },
-  amountModal: {
-    backgroundColor: '#fff',
-    height: 150,
-    marginTop: 300
-  }
 })
 
 export default Dishes;
