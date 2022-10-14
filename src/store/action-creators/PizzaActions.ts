@@ -35,3 +35,24 @@ export const FetchDishes = () => {
     }
   }
 }
+
+export const AddOrderCart = (dish: object) => {
+  return {
+    type: PizzaActionTypes.ADD_ORDER_CART,
+    payload: dish
+  }
+}
+
+export const AddOrderPrice = (price: number) => {
+  return {
+    type: PizzaActionTypes.ADD_ORDER_PRICE,
+    payload: price
+  }
+}
+
+export const RemoveOrderDish = (dish: string) => {
+  return {
+    type: PizzaActionTypes.REMOVE_ORDER_DISH,
+    payload: dish
+  }
+}
