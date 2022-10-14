@@ -21,7 +21,7 @@ export const PizzaReducer = (state = initialState, action: PizzaActions): PizzaS
     case PizzaActionTypes.ADD_ORDER_CART:
       const newCart = [...state.order.cart]
       for (let i = 0; i < newCart.length; i++) {
-        if (newCart[i].title === action.payload) {
+        if (newCart[i].title === action.payload.title) {
           const initialPrice = newCart[i].price / newCart[i].amount
           newCart[i].amount += 1
           newCart[i].price += initialPrice
@@ -36,6 +36,7 @@ export const PizzaReducer = (state = initialState, action: PizzaActions): PizzaS
     case PizzaActionTypes.REMOVE_ORDER_DISH:
       const selectedDish = state.order.cart.filter((dish: any) => dish.title === action.payload)
       const CartWithoutDish = state.order.cart.filter((dish: any) => dish.title !== action.payload)
+      const removedPrice = state.order.totalPrice - selectedDish[0].price
       if (selectedDish[0].amount > 1) {
         let index = 0
         for (let i = 0; i < state.order.cart.length; i++) {
@@ -44,9 +45,9 @@ export const PizzaReducer = (state = initialState, action: PizzaActions): PizzaS
           }
         }
         const newSelectedDish = {...state.order.cart[index], amount: state.order.cart[index].amount--}
-        return {...state, order: {...state.order, cart: [...CartWithoutDish, newSelectedDish]}}
+        return {...state, order: {...state.order, cart: [...CartWithoutDish, newSelectedDish], totalPrice: removedPrice}}
       }
-      return {...state, order: {...state.order, cart: CartWithoutDish}}
+      return {...state, order: {...state.order, cart: CartWithoutDish, totalPrice: removedPrice}}
     default:
       return state
   }

@@ -30,7 +30,7 @@ interface FetchErrorDishes {
 
 interface AddOrderCart {
   type: PizzaActionTypes.ADD_ORDER_CART,
-  payload: any[]
+  payload: any
 }
 
 interface AddOrderPrice {
