@@ -57,6 +57,7 @@ const Dishes = () => {
         }
         </View>
       }
+      <OrdersModal setVisible={setOrdersModal} visible={ordersModal}/>
       <DishesModal
         selectedDishPrice={selectedDishPrice}
         setSelectedDishPrice={setSelectedDishPrice}
@@ -65,7 +66,6 @@ const Dishes = () => {
         amountModal={amountModal}
         setAmountModal={setAmountModal}
       />
-      <OrdersModal setVisible={setOrdersModal} visible={ordersModal}/>
     </View>
   );
 };
