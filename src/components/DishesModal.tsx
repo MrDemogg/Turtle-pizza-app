@@ -34,7 +34,12 @@ const DishesModal: FC<DishesModalProps> = (
         <Button onPress={() => {
           if (!isNaN(Number(amount)) && amount.length > 0) {
             const price = Number(selectedDishPrice) * Number(amount)
-            AddOrderCart({amount: Number(amount), price: price, title: selectedDishTitle})
+            AddOrderCart({
+              amount: Number(amount),
+              price: price,
+              title: selectedDishTitle,
+              defaultPrice: Number(selectedDishPrice)},
+              Number(selectedDishPrice))
             AddOrderPrice(price)
             toDefault()
           } else {
