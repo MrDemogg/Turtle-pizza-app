@@ -1,6 +1,6 @@
-import React, {FC} from 'react';
+import React, {FC, useState} from 'react';
 import {StyleSheet, Text, View} from "react-native";
-import {IconButton, MD3Colors, Modal, Button} from "react-native-paper";
+import {IconButton, MD3Colors, Modal, Button, Dialog, Paragraph} from "react-native-paper";
 import {useTypedSelector} from "../hooks/useTypedSelector";
 import {useActions} from "../hooks/useActions";
 import {initializeApp} from "firebase/app";
@@ -15,6 +15,7 @@ interface OrdersModalProps {
 const OrdersModal: FC<OrdersModalProps> = ({visible, setVisible}) => {
   const {order, error} = useTypedSelector(state => state.pizza)
   const {RemoveOrderDish} = useActions()
+  const [dialog, setDialog] = useState(false)
   const postOrder = () => {
     const firebaseConfig = {
       apiKey: "AIzaSyDM3wwBqFN2W2kKSou8n_hN5__eNxF70yE",
@@ -54,7 +55,10 @@ const OrdersModal: FC<OrdersModalProps> = ({visible, setVisible}) => {
                   <Text style={{fontSize: 20}}>{dish.title} x{dish.amount}</Text>
                   <Text style={{fontSize: 18}}>{dish.price} руб.</Text>
                   <IconButton
-                    icon='delete'
+                    icon={dish.amount > 1
+                      ? 'back'
+                      : 'delete'
+                    }
                     iconColor={MD3Colors.primary50}
                     size={20}
                     onPress={() => RemoveOrderDish(dish.title)}
@@ -62,15 +66,29 @@ const OrdersModal: FC<OrdersModalProps> = ({visible, setVisible}) => {
                 </View>
               )}
             </View>
-            : <Text style={{fontSize: 30, ...styles.dishInfo}}>В корзине пусто</Text>
+            : <Text style={{fontSize: 30, marginBottom: 50}}>В корзине пусто</Text>
           }
         <Text style={{fontSize: 27}}>Delivery: 150 руб.</Text>
         <Text style={{fontSize: 29}}>Total: {order.totalPrice} руб.</Text>
         <View style={styles.buttons}>
           <Button onPress={() => setVisible(false)} mode="contained" icon='close'>Cancel</Button>
-          <Button onPress={() => postOrder()} mode="contained" icon='check'>Cancel</Button>
+          <Button onPress={() => {
+            if (order.totalPrice > 150) {
+              postOrder()
+            } else {
+              setDialog(true)
+            }
+          }} mode="contained" icon='check'>Order</Button>
         </View>
       </View>
+      <Dialog visible={dialog} onDismiss={() => setDialog(false)}>
+        <Dialog.Content>
+          <Paragraph>Cart is empty</Paragraph>
+        </Dialog.Content>
+        <Dialog.Actions>
+          <Button onPress={() => setDialog(false)}>Ok</Button>
+        </Dialog.Actions>
+      </Dialog>
     </Modal>
   );
 };
@@ -89,18 +107,19 @@ const styles = StyleSheet.create({
     fontSize: 40,
     fontWeight: 'bold',
     position: 'absolute',
-    top: -230
+    top: -150
   },
   modalContainer: {
     flex: 1,
-    paddingBottom: 10,
+    marginBottom: 100,
     backgroundColor: '#000'
   },
   dishInfo: {
     width: '100%',
     justifyContent: 'space-between',
-    position: 'absolute',
-    top: -120
+    display: 'flex',
+    flexDirection: 'row',
+    marginBottom: -30,
   },
   buttons: {
     display: 'flex',
