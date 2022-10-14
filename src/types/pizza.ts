@@ -40,7 +40,7 @@ interface AddOrderPrice {
 
 interface RemoveOrderDish {
   type: PizzaActionTypes.REMOVE_ORDER_DISH,
-  payload: string
+  payload: any
 }
 
 export type PizzaActions = FetchDishes | FetchSuccessDishes | FetchErrorDishes | AddOrderPrice | AddOrderCart | RemoveOrderDish

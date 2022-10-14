@@ -36,10 +36,11 @@ export const FetchDishes = () => {
   }
 }
 
-export const AddOrderCart = (dish: object) => {
+export const AddOrderCart = (dish: object, defaultPrice: number) => {
+  const actions = [dish, defaultPrice]
   return {
     type: PizzaActionTypes.ADD_ORDER_CART,
-    payload: dish
+    payload: actions
   }
 }
 
