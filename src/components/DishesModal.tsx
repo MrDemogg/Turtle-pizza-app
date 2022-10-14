@@ -17,7 +17,7 @@ const DishesModal: FC<DishesModalProps> = (
     selectedDishPrice, setSelectedDishTitle, setSelectedDishPrice, selectedDishTitle, amountModal, setAmountModal
   }) => {
   const [amount, setAmount] = useState('')
-  const [dialog, setDialod] = useState(false)
+  const [dialog, setDialog] = useState(false)
   const {AddOrderCart, AddOrderPrice} = useActions()
   const toDefault = () => {
     setAmountModal(false)
@@ -32,24 +32,24 @@ const DishesModal: FC<DishesModalProps> = (
           toDefault()
         }}>Cancel</Button>
         <Button onPress={() => {
-          if (!isNaN(Number(amount))) {
+          if (!isNaN(Number(amount)) && amount.length > 0) {
             const price = Number(selectedDishPrice) * Number(amount)
             AddOrderCart({amount: Number(amount), price: price, title: selectedDishTitle})
             AddOrderPrice(price)
             toDefault()
           } else {
-            setDialod(true)
+            setDialog(true)
           }
         }}>
           Add to cart
         </Button>
       </View>
-      <Dialog visible={dialog} onDismiss={() => setDialod(false)}>
+      <Dialog visible={dialog} onDismiss={() => setDialog(false)}>
         <Dialog.Content>
           <Paragraph>Amount must be integer</Paragraph>
         </Dialog.Content>
         <Dialog.Actions>
-          <Button onPress={() => setDialod(false)}>Ok</Button>
+          <Button onPress={() => setDialog(false)}>Ok</Button>
         </Dialog.Actions>
       </Dialog>
     </Modal>
