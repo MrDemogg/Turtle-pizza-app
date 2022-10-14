@@ -2,14 +2,16 @@ export enum PizzaActionTypes {
   FETCH_DISHES = "FETCH_DISHES",
   FETCH_SUCCESS_DISHES = "FETCH_SUCCESS_DISHES",
   FETCH_ERROR_DISHES = "FETCH_ERROR_DISHES",
-  SET_ORDER = "SET_ORDER"
+  ADD_ORDER_PRICE = "ADD_ORDER_PRICE",
+  ADD_ORDER_CART = "ADD_ORDER_CART",
+  REMOVE_ORDER_DISH = "REMOVE_ORDER_DISH"
 }
 
 export interface PizzaState {
   error: null | string,
   loading: boolean,
   dishes: any[] | null,
-  order: any | null
+  order: any
 }
 
 interface FetchDishes {
@@ -26,9 +28,19 @@ interface FetchErrorDishes {
   payload: string
 }
 
-interface SetOrder {
-  type: PizzaActionTypes.SET_ORDER,
-  payload: any
+interface AddOrderCart {
+  type: PizzaActionTypes.ADD_ORDER_CART,
+  payload: any[]
 }
 
-export type PizzaActions = FetchDishes | FetchSuccessDishes | FetchErrorDishes | SetOrder
+interface AddOrderPrice {
+  type: PizzaActionTypes.ADD_ORDER_PRICE,
+  payload: number
+}
+
+interface RemoveOrderDish {
+  type: PizzaActionTypes.REMOVE_ORDER_DISH,
+  payload: string
+}
+
+export type PizzaActions = FetchDishes | FetchSuccessDishes | FetchErrorDishes | AddOrderPrice | AddOrderCart | RemoveOrderDish
