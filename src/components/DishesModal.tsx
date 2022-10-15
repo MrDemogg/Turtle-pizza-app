@@ -1,7 +1,8 @@
 import React, {FC, useState} from 'react';
-import {StyleSheet, View} from "react-native";
-import {Button, Dialog, Modal, Paragraph, TextInput} from "react-native-paper";
+import {StyleSheet, View, Text} from "react-native";
+import {Button, Modal} from "react-native-paper";
 import {useActions} from "../hooks/useActions";
+import Slider from "@react-native-community/slider";
 
 interface DishesModalProps {
   selectedDishPrice: number,
@@ -16,8 +17,7 @@ const DishesModal: FC<DishesModalProps> = (
   {
     selectedDishPrice, setSelectedDishTitle, setSelectedDishPrice, selectedDishTitle, amountModal, setAmountModal
   }) => {
-  const [amount, setAmount] = useState('')
-  const [dialog, setDialog] = useState(false)
+  const [amount, setAmount] = useState(1)
   const {AddOrderCart, AddOrderPrice} = useActions()
   const toDefault = () => {
     setAmountModal(false)
@@ -27,36 +27,40 @@ const DishesModal: FC<DishesModalProps> = (
   return (
     <Modal style={styles.amountModal} visible={amountModal} onDismiss={() => setAmountModal(false)}>
       <View style={{display: 'flex', justifyContent: 'space-between', width: '100%'}}>
-        <TextInput value={amount} onChangeText={(value) => setAmount(value)} label='Amount:' />
+        <View>
+          <Text style={styles.titles}>Amount:</Text>
+          <Text style={styles.titles}> {amount}</Text>
+        </View>
+        <Slider
+          style={{width: '98%', height: 10}}
+          minimumValue={1}
+          maximumValue={5}
+          value={amount}
+          onValueChange={(value) => {
+            const newAmount = parseInt(value.toString())
+            setAmount(newAmount)
+          }}
+          minimumTrackTintColor="#1ddb8c"
+          maximumTrackTintColor="#000000"
+          tapToSeek={true}
+        />
         <Button onPress={() => {
           toDefault()
         }}>Cancel</Button>
         <Button onPress={() => {
-          if (!isNaN(Number(amount)) && amount.length > 0) {
-            const price = Number(selectedDishPrice) * Number(amount)
-            AddOrderCart({
-              amount: Number(amount),
-              price: price,
-              title: selectedDishTitle,
-              defaultPrice: Number(selectedDishPrice)},
-              Number(selectedDishPrice))
-            AddOrderPrice(price)
-            toDefault()
-          } else {
-            setDialog(true)
-          }
+          const price = Number(selectedDishPrice) * amount
+          AddOrderCart({
+            amount: amount,
+            price: price,
+            title: selectedDishTitle,
+            defaultPrice: Number(selectedDishPrice)},
+            Number(selectedDishPrice))
+          AddOrderPrice(price)
+          toDefault()
         }}>
           Add to cart
         </Button>
       </View>
-      <Dialog visible={dialog} onDismiss={() => setDialog(false)}>
-        <Dialog.Content>
-          <Paragraph>Amount must be integer</Paragraph>
-        </Dialog.Content>
-        <Dialog.Actions>
-          <Button onPress={() => setDialog(false)}>Ok</Button>
-        </Dialog.Actions>
-      </Dialog>
     </Modal>
   );
 };
@@ -66,6 +70,10 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     height: 150,
     marginTop: 300
+  },
+  titles: {
+    fontSize: 20,
+    textAlign: 'center'
   }
 })
 
