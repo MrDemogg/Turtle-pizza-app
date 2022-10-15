@@ -48,7 +48,7 @@ const Dishes = () => {
               >
                 <Text style={{color: '#fff', fontSize: 28}}>Order total: {order.totalPrice}</Text>
                 <Button
-                  style={{position: 'relative', bottom: 35, width: 200, left: 210}}
+                  style={{position: 'relative', bottom: 35, width: 108, left: 303}}
                   mode="contained" onPress={() => setOrdersModal(true)}>Checkout</Button>
                 </View></View>
               : <Text>Блюд не найдено</Text>

@@ -64,17 +64,25 @@ const OrdersModal: FC<OrdersModalProps> = ({visible, setVisible}) => {
           {order.cart.length > 0
             ? <ScrollView style={styles.scroll}>
               {order.cart.map((dish: any) =>
-                <View key={dish.title} style={styles.dishInfo}>
-                  <Text style={{fontSize: 20}}>{dish.title} x{dish.amount}</Text>
+                <View key={dish.title}>
+                  <View style={styles.dishInfo}>
+                    <Text style={{fontSize: 20}}>{dish.title} x{dish.amount}</Text>
+                    <IconButton
+                      icon={dish.amount > 1
+                        ? 'repeat'
+                        : 'delete'
+                      }
+                      iconColor={MD3Colors.primary50}
+                      size={40}
+                      onPress={() => RemoveOrderDish(dish.title)}
+                    />
+                  </View>
                   <Text style={{fontSize: 18}}>{dish.price} руб.</Text>
-                  <IconButton
-                    icon={dish.amount > 1
-                      ? 'repeat'
-                      : 'delete'
-                    }
-                    iconColor={MD3Colors.primary50}
-                    size={20}
-                    onPress={() => RemoveOrderDish(dish.title)}
+                  <View
+                    style={{
+                      borderBottomColor: 'black',
+                      borderBottomWidth: 1,
+                    }}
                   />
                 </View>
               )}
@@ -124,7 +132,7 @@ const styles = StyleSheet.create({
     top: -150
   },
   dishInfo: {
-    width: '100%',
+    width: '80%',
     height: 40,
     justifyContent: 'space-between',
     display: 'flex',
